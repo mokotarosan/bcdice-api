@@ -95,6 +95,26 @@ get "/v1/onset" do
   end
 end
 
+TEST_GAME_TYPE = "StellarKnights"
+
+get "/tester" do
+  @command = params[:command]
+
+  dicebot = BCDice::DICEBOTS[TEST_GAME_TYPE]
+  @title = dicebot.gameName
+  @help = dicebot.getHelpMessage
+
+  if @command
+    begin
+      @result, = diceroll(TEST_GAME_TYPE, @command)
+    rescue CommandError
+      @result = "対応していないコマンド：#{@command}"
+    end
+  end
+  erb :tester
+
+end
+
 not_found do
   jsonp ok: false, reason: "not found"
 end
